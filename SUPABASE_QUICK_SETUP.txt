@@ -1,0 +1,79 @@
+================================================================================
+  SUPABASE SETUP - QUICK START GUIDE
+================================================================================
+
+You've added credentials to .env.local ✅
+Now you need to set up the database and storage.
+
+================================================================================
+STEP 1: RUN DATABASE MIGRATIONS (REQUIRED)
+================================================================================
+
+1. Go to: https://supabase.com/dashboard/project/okymawetlthviiqfccbn
+2. Click "SQL Editor" in left sidebar
+3. Click "New Query"
+4. Copy the ENTIRE contents of: supabase/migrations/001_initial_schema.sql
+5. Paste into SQL Editor
+6. Click "Run" (or Cmd+Enter)
+7. Wait for "Success" message
+
+Repeat for:
+  - supabase/migrations/002_storage_buckets.sql
+  - supabase/migrations/008_profiles.sql  
+  - supabase/migrations/010_admin_column.sql
+
+================================================================================
+STEP 2: VERIFY STORAGE BUCKETS (REQUIRED)
+================================================================================
+
+1. Go to "Storage" in Supabase Dashboard
+2. You should see these buckets:
+   ✅ cards-images
+   ✅ cards-audio
+
+If they don't exist, the migration in Step 1 should have created them.
+If still missing, create them manually:
+  - Name: cards-images, Public: Yes, Size limit: 5MB
+  - Name: cards-audio, Public: Yes, Size limit: 10MB
+
+================================================================================
+STEP 3: ENABLE GOOGLE OAUTH (FOR LOGIN)
+================================================================================
+
+1. Go to "Authentication" → "Providers"
+2. Find "Google" and click it
+3. Click "Enable"
+4. You'll need Google OAuth credentials (see SUPABASE_SETUP.md for details)
+
+FOR NOW: You can skip this if you just want to test without login.
+
+================================================================================
+STEP 4: VERIFY SETUP
+================================================================================
+
+1. Go to "Table Editor" in Supabase Dashboard
+2. You should see these tables:
+   ✅ categories
+   ✅ cards
+   ✅ card_terms
+   ✅ profiles
+
+3. Go to "Storage"
+4. You should see:
+   ✅ cards-images bucket
+   ✅ cards-audio bucket
+
+================================================================================
+THAT'S IT!
+================================================================================
+
+After setup:
+1. Restart your dev server: ./podman-dev.sh restart
+2. Open: http://127.0.0.1:3000
+3. Try creating a card at: /admin/cards/new
+
+================================================================================
+NEED HELP?
+================================================================================
+
+See SUPABASE_SETUP.md for detailed instructions and troubleshooting.

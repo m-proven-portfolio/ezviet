@@ -1,0 +1,164 @@
+[
+    {
+        "id": "papaya",
+        "category": "fruit",
+        "en": "papaya",
+        "vi": [
+            "trái đu đủ",
+            "đu đủ"
+        ]
+    },
+    {
+        "id": "orange",
+        "category": "fruit",
+        "en": "orange",
+        "vi": [
+            "trái cam",
+            "cam"
+        ]
+    },
+    {
+        "id": "apple",
+        "category": "fruit",
+        "en": "apple",
+        "vi": [
+            "trái táo",
+            "táo"
+        ]
+    },
+    {
+        "id": "banana",
+        "category": "fruit",
+        "en": "banana",
+        "vi": [
+            "trái chuối",
+            "chuối"
+        ]
+    },
+    {
+        "id": "mango",
+        "category": "fruit",
+        "en": "mango",
+        "vi": [
+            "trái xoài",
+            "xoài"
+        ]
+    },
+    {
+        "id": "coconut",
+        "category": "fruit",
+        "en": "coconut",
+        "vi": [
+            "trái dừa",
+            "dừa"
+        ]
+    },
+    {
+        "id": "strawberry",
+        "category": "fruit",
+        "en": "strawberry",
+        "vi": [
+            "trái dâu",
+            "dâu"
+        ]
+    },
+    {
+        "id": "grape",
+        "category": "fruit",
+        "en": "grape",
+        "vi": [
+            "trái nho",
+            "nho"
+        ]
+    },
+    {
+        "id": "watermelon",
+        "category": "fruit",
+        "en": "watermelon",
+        "vi": [
+            "trái dưa hấu",
+            "dưa hấu"
+        ]
+    },
+    {
+        "id": "dragon_fruit",
+        "category": "fruit",
+        "en": "dragon fruit",
+        "vi": [
+            "trái thanh long",
+            "thanh long"
+        ]
+    },
+    {
+        "id": "lychee",
+        "category": "fruit",
+        "en": "lychee",
+        "vi": [
+            "trái vải",
+            "vải"
+        ]
+    },
+    {
+        "id": "avocado",
+        "category": "fruit",
+        "en": "avocado",
+        "vi": [
+            "trái bơ",
+            "bơ"
+        ]
+    },
+    {
+        "id": "longan",
+        "category": "fruit",
+        "en": "longan",
+        "vi": [
+            "trái nhãn",
+            "nhãn"
+        ]
+    },
+    {
+        "id": "rambutan",
+        "category": "fruit",
+        "en": "rambutan",
+        "vi": [
+            "trái chôm chôm",
+            "chôm chôm"
+        ]
+    },
+    {
+        "id": "mangosteen",
+        "category": "fruit",
+        "en": "mangosteen",
+        "vi": [
+            "trái măng cụt",
+            "măng cụt"
+        ]
+    },
+    {
+        "id": "dog",
+        "category": "animal",
+        "en": "dog",
+        "vi": [
+            "con chó",
+            "chó"
+        ]
+    },
+    {
+        "id": "cat",
+        "category": "animal",
+        "en": "cat",
+        "vi": [
+            "con mèo",
+            "mèo"
+        ]
+    },
+    {
+        "id": "bird",
+        "category": "animal",
+        "en": "bird",
+        "vi": [
+            "con chim",
+            "chim"
+        ]
+    }
+]

@@ -1,0 +1,739 @@
+/**
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *                          EZViet Global Styles
+ * ═══════════════════════════════════════════════════════════════════════════════
+ *
+ * This file establishes the design system foundation for EZViet.
+ * All colors, spacing, and component styles derive from design tokens.
+ *
+ * Structure:
+ * 1. Tailwind Import
+ * 2. CSS Custom Properties (Design Tokens)
+ * 3. Theme Extension for Tailwind
+ * 4. Base Styles
+ * 5. Utility Classes
+ * 6. Animations
+ *
+ * ─────────────────────────────────────────────────────────────────────────────────
+ */
+
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   1. CSS CUSTOM PROPERTIES - Design Tokens
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ─────────────────────────────────────────────────────────────────────────────
+     COLORS - Jade (Primary)
+     The color of growth and learning - inspired by Vietnamese jade and tea
+     ───────────────────────────────────────────────────────────────────────────── */
+  --color-jade-50: hsl(158, 64%, 96%);
+  --color-jade-100: hsl(158, 58%, 90%);
+  --color-jade-200: hsl(160, 52%, 78%);
+  --color-jade-300: hsl(161, 48%, 64%);
+  --color-jade-400: hsl(162, 45%, 48%);
+  --color-jade-500: hsl(163, 72%, 38%);  /* Primary action color */
+  --color-jade-600: hsl(164, 78%, 31%);
+  --color-jade-700: hsl(165, 82%, 25%);
+  --color-jade-800: hsl(166, 84%, 20%);
+  --color-jade-900: hsl(167, 86%, 14%);
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     COLORS - Amber (Accent)
+     The color of achievement - inspired by Hội An lanterns
+     ───────────────────────────────────────────────────────────────────────────── */
+  --color-amber-50: hsl(45, 100%, 96%);
+  --color-amber-100: hsl(45, 96%, 89%);
+  --color-amber-200: hsl(44, 94%, 78%);
+  --color-amber-300: hsl(43, 92%, 65%);
+  --color-amber-400: hsl(42, 90%, 55%);  /* Badges, achievements */
+  --color-amber-500: hsl(40, 88%, 48%);
+  --color-amber-600: hsl(38, 90%, 42%);
+  --color-amber-700: hsl(35, 92%, 35%);
+  --color-amber-800: hsl(32, 90%, 28%);
+  --color-amber-900: hsl(28, 88%, 22%);
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     COLORS - Coral (Warning/Danger)
+     For errors and destructive actions - use sparingly
+     ───────────────────────────────────────────────────────────────────────────── */
+  --color-coral-50: hsl(8, 100%, 97%);
+  --color-coral-100: hsl(8, 94%, 92%);
+  --color-coral-200: hsl(7, 90%, 84%);
+  --color-coral-300: hsl(6, 86%, 72%);
+  --color-coral-400: hsl(5, 82%, 62%);
+  --color-coral-500: hsl(4, 78%, 52%);  /* Errors */
+  --color-coral-600: hsl(3, 80%, 44%);
+  --color-coral-700: hsl(2, 82%, 36%);
+  --color-coral-800: hsl(1, 84%, 28%);
+  --color-coral-900: hsl(0, 86%, 22%);
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     COLORS - Neutral (Warm gray)
+     For text, backgrounds, and borders
+     ───────────────────────────────────────────────────────────────────────────── */
+  --color-neutral-0: hsl(0, 0%, 100%);
+  --color-neutral-50: hsl(40, 10%, 98%);
+  --color-neutral-100: hsl(40, 8%, 95%);
+  --color-neutral-200: hsl(38, 6%, 90%);
+  --color-neutral-300: hsl(36, 5%, 80%);
+  --color-neutral-400: hsl(34, 4%, 64%);
+  --color-neutral-500: hsl(32, 3%, 48%);
+  --color-neutral-600: hsl(30, 4%, 36%);
+  --color-neutral-700: hsl(28, 5%, 26%);
+  --color-neutral-800: hsl(26, 6%, 18%);
+  --color-neutral-900: hsl(24, 8%, 10%);
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     SEMANTIC TOKENS - What colors DO, not what they ARE
+     ───────────────────────────────────────────────────────────────────────────── */
+
+  /* Interactive */
+  --interactive: var(--color-jade-500);
+  --interactive-hover: var(--color-jade-600);
+  --interactive-active: var(--color-jade-700);
+  --interactive-subtle: var(--color-jade-50);
+
+  /* Text */
+  --text-primary: var(--color-neutral-800);
+  --text-secondary: var(--color-neutral-600);
+  --text-tertiary: var(--color-neutral-500);
+  --text-disabled: var(--color-neutral-400);
+  --text-inverse: var(--color-neutral-0);
+  --text-link: var(--color-jade-600);
+
+  /* Surfaces */
+  --surface-page: var(--color-neutral-50);
+  --surface-card: var(--color-neutral-0);
+  --surface-elevated: var(--color-neutral-0);
+  --surface-overlay: hsla(24, 8%, 10%, 0.6);
+
+  /* Borders */
+  --border-default: var(--color-neutral-200);
+  --border-subtle: var(--color-neutral-100);
+  --border-strong: var(--color-neutral-300);
+  --border-focus: var(--color-jade-500);
+
+  /* Feedback */
+  --feedback-success: var(--color-jade-500);
+  --feedback-success-subtle: var(--color-jade-50);
+  --feedback-warning: var(--color-amber-500);
+  --feedback-warning-subtle: var(--color-amber-50);
+  --feedback-error: var(--color-coral-500);
+  --feedback-error-subtle: var(--color-coral-50);
+
+  /* Achievement */
+  --achievement-gold: var(--color-amber-400);
+  --achievement-subtle: var(--color-amber-50);
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     SHADOWS - Layered for depth
+     ───────────────────────────────────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 2px 0 hsla(24, 8%, 10%, 0.03), 0 1px 3px 0 hsla(24, 8%, 10%, 0.05);
+  --shadow-md: 0 2px 4px 0 hsla(24, 8%, 10%, 0.03), 0 4px 8px 0 hsla(24, 8%, 10%, 0.06), 0 1px 2px 0 hsla(24, 8%, 10%, 0.04);
+  --shadow-lg: 0 4px 8px 0 hsla(24, 8%, 10%, 0.04), 0 8px 16px 0 hsla(24, 8%, 10%, 0.06), 0 2px 4px 0 hsla(24, 8%, 10%, 0.04);
+  --shadow-xl: 0 8px 16px 0 hsla(24, 8%, 10%, 0.05), 0 16px 32px 0 hsla(24, 8%, 10%, 0.08), 0 4px 8px 0 hsla(24, 8%, 10%, 0.04);
+  --shadow-inner: inset 0 1px 2px 0 hsla(24, 8%, 10%, 0.05);
+  --shadow-focus: 0 0 0 3px hsla(163, 72%, 38%, 0.2);
+  --shadow-focus-error: 0 0 0 3px hsla(4, 78%, 52%, 0.2);
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     ANIMATION
+     ───────────────────────────────────────────────────────────────────────────── */
+  --duration-instant: 0ms;
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ─────────────────────────────────────────────────────────────────────────────
+     RADII
+     ───────────────────────────────────────────────────────────────────────────── */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   2. TAILWIND THEME EXTENSION
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+@theme inline {
+  /* Map our semantic tokens to Tailwind */
+  --color-background: var(--surface-page);
+  --color-foreground: var(--text-primary);
+
+  /* Colors */
+  --color-jade-50: var(--color-jade-50);
+  --color-jade-100: var(--color-jade-100);
+  --color-jade-200: var(--color-jade-200);
+  --color-jade-300: var(--color-jade-300);
+  --color-jade-400: var(--color-jade-400);
+  --color-jade-500: var(--color-jade-500);
+  --color-jade-600: var(--color-jade-600);
+  --color-jade-700: var(--color-jade-700);
+  --color-jade-800: var(--color-jade-800);
+  --color-jade-900: var(--color-jade-900);
+
+  --color-amber-50: var(--color-amber-50);
+  --color-amber-100: var(--color-amber-100);
+  --color-amber-200: var(--color-amber-200);
+  --color-amber-300: var(--color-amber-300);
+  --color-amber-400: var(--color-amber-400);
+  --color-amber-500: var(--color-amber-500);
+  --color-amber-600: var(--color-amber-600);
+  --color-amber-700: var(--color-amber-700);
+  --color-amber-800: var(--color-amber-800);
+  --color-amber-900: var(--color-amber-900);
+
+  --color-coral-50: var(--color-coral-50);
+  --color-coral-100: var(--color-coral-100);
+  --color-coral-200: var(--color-coral-200);
+  --color-coral-300: var(--color-coral-300);
+  --color-coral-400: var(--color-coral-400);
+  --color-coral-500: var(--color-coral-500);
+  --color-coral-600: var(--color-coral-600);
+  --color-coral-700: var(--color-coral-700);
+  --color-coral-800: var(--color-coral-800);
+  --color-coral-900: var(--color-coral-900);
+
+  --color-neutral-0: var(--color-neutral-0);
+  --color-neutral-50: var(--color-neutral-50);
+  --color-neutral-100: var(--color-neutral-100);
+  --color-neutral-200: var(--color-neutral-200);
+  --color-neutral-300: var(--color-neutral-300);
+  --color-neutral-400: var(--color-neutral-400);
+  --color-neutral-500: var(--color-neutral-500);
+  --color-neutral-600: var(--color-neutral-600);
+  --color-neutral-700: var(--color-neutral-700);
+  --color-neutral-800: var(--color-neutral-800);
+  --color-neutral-900: var(--color-neutral-900);
+
+  /* Shadows */
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   3. BASE STYLES
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+body {
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Form inputs - consistent styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+textarea,
+select {
+  color: var(--text-primary);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration-fast) var(--ease-default),
+              box-shadow var(--duration-fast) var(--ease-default);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-disabled);
+}
+
+/* Links */
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-default);
+}
+
+a:hover {
+  color: var(--interactive-hover);
+}
+
+/* Selection */
+::selection {
+  background: var(--color-jade-100);
+  color: var(--color-jade-900);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   4. UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Card hover lift effect */
+.card-hover {
+  transition: transform var(--duration-normal) var(--ease-default),
+              box-shadow var(--duration-normal) var(--ease-default);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Button press effect */
+.btn-press:active {
+  transform: scale(0.98);
+}
+
+/* Focus visible ring (keyboard navigation) */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* Smooth text color transition */
+.text-transition {
+  transition: color var(--duration-fast) var(--ease-default);
+}
+
+/* Safe area for iPhone notch/home indicator */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   5. ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Fade in (vertical) */
+.animate-fade-in {
+  animation: fadeIn var(--duration-slow) var(--ease-out);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade in (horizontal) */
+.animate-fade-in-horizontal {
+  animation: fadeInHorizontal 150ms var(--ease-out);
+}
+
+@keyframes fadeInHorizontal {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide in from right (toasts) */
+.animate-slide-in {
+  animation: slideIn var(--duration-slow) var(--ease-out);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Menu open */
+.animate-menu-open {
+  animation: menuOpen var(--duration-normal) var(--ease-out);
+}
+
+@keyframes menuOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scale in (modals, popovers) */
+.animate-scale-in {
+  animation: scaleIn var(--duration-slow) var(--ease-spring);
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Ping once (notifications) */
+.animate-ping-once {
+  animation: pingOnce 800ms var(--ease-out);
+}
+
+@keyframes pingOnce {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Shimmer (loading states) */
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Float up (achievement celebrations) */
+.animate-float-up {
+  animation: floatUp var(--duration-slower) var(--ease-out) forwards;
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -100%) scale(0.8);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Karaoke-specific animations
+   ───────────────────────────────────────────────────────────────────────────── */
+
+.animate-karaoke-slide-up {
+  animation: karaokeSlideUp 400ms var(--ease-spring);
+}
+
+@keyframes karaokeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-karaoke-expand {
+  animation: karaokeExpand var(--duration-slow) var(--ease-spring);
+}
+
+@keyframes karaokeExpand {
+  from {
+    opacity: 0.8;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.karaoke-glow {
+  animation: karaokeGlow 2s ease-in-out infinite;
+}
+
+@keyframes karaokeGlow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.6), 0 0 40px rgba(168, 85, 247, 0.4);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(168, 85, 247, 0.8), 0 0 60px rgba(168, 85, 247, 0.5);
+  }
+}
+
+.animate-flash {
+  animation: flash var(--duration-slow) var(--ease-out);
+}
+
+@keyframes flash {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Onboarding animations
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Spotlight pulse - draws attention to interactive elements */
+.animate-spotlight {
+  animation: spotlight 2s ease-in-out infinite;
+}
+
+@keyframes spotlight {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(16, 185, 129, 0);
+  }
+}
+
+/* Swipe hint - hand gesture animation */
+.animate-swipe-hint {
+  animation: swipeHint 2s ease-in-out infinite;
+}
+
+@keyframes swipeHint {
+  0%, 100% {
+    transform: translateX(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateX(30px);
+    opacity: 1;
+  }
+}
+
+/* Celebration bounce-in */
+.animate-celebration-in {
+  animation: celebrationIn var(--duration-slower) var(--ease-bounce);
+}
+
+@keyframes celebrationIn {
+  0% {
+    transform: scale(0) translateY(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Subtle bob for stacked cards */
+.animate-subtle-bob {
+  animation: subtleBob 3s ease-in-out infinite;
+}
+
+@keyframes subtleBob {
+  0%, 100% {
+    transform: translateY(3px) translateX(3px) scale(0.96);
+  }
+  50% {
+    transform: translateY(5px) translateX(4px) scale(0.96);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   6. ACCESSIBILITY
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .karaoke-glow {
+    animation: none;
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border-default: var(--color-neutral-400);
+    --border-subtle: var(--color-neutral-300);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   7. DARK MODE
+   ═══════════════════════════════════════════════════════════════════════════════
+
+   Dark mode is controlled by the data-theme attribute on <html>.
+   - data-theme="light" → Light mode (default)
+   - data-theme="dark" → Dark mode
+
+   The ThemeProvider sets this attribute based on user preference or system setting.
+   When data-theme is not set, we fall back to system preference via media query.
+*/
+
+/* Manual toggle: data-theme="dark" attribute */
+[data-theme="dark"] {
+  /* Override semantic tokens for dark mode */
+  --text-primary: var(--color-neutral-100);
+  --text-secondary: var(--color-neutral-300);
+  --text-tertiary: var(--color-neutral-400);
+  --text-disabled: var(--color-neutral-500);
+  --text-inverse: var(--color-neutral-900);
+  --text-link: var(--color-jade-400);
+
+  --surface-page: var(--color-neutral-900);
+  --surface-card: var(--color-neutral-800);
+  --surface-elevated: var(--color-neutral-700);
+  --surface-overlay: hsla(0, 0%, 0%, 0.7);
+
+  --border-default: var(--color-neutral-700);
+  --border-subtle: var(--color-neutral-800);
+  --border-strong: var(--color-neutral-600);
+  --border-focus: var(--color-jade-400);
+
+  --interactive: var(--color-jade-400);
+  --interactive-hover: var(--color-jade-300);
+  --interactive-active: var(--color-jade-500);
+  --interactive-subtle: var(--color-jade-900);
+
+  --feedback-success-subtle: var(--color-jade-900);
+  --feedback-warning-subtle: var(--color-amber-900);
+  --feedback-error-subtle: var(--color-coral-900);
+
+  /* Adjust shadows for dark mode (darker, more subtle) */
+  --shadow-sm: 0 1px 2px 0 hsla(0, 0%, 0%, 0.3), 0 1px 3px 0 hsla(0, 0%, 0%, 0.4);
+  --shadow-md: 0 2px 4px 0 hsla(0, 0%, 0%, 0.3), 0 4px 8px 0 hsla(0, 0%, 0%, 0.4);
+  --shadow-lg: 0 4px 8px 0 hsla(0, 0%, 0%, 0.3), 0 8px 16px 0 hsla(0, 0%, 0%, 0.5);
+  --shadow-xl: 0 8px 16px 0 hsla(0, 0%, 0%, 0.3), 0 16px 32px 0 hsla(0, 0%, 0%, 0.5);
+  --shadow-focus: 0 0 0 3px hsla(163, 72%, 50%, 0.3);
+}
+
+/* Selection colors for dark mode */
+[data-theme="dark"] ::selection {
+  background: var(--color-jade-800);
+  color: var(--color-jade-100);
+}
+
+/* Karaoke glow for dark mode (brighter to stand out) */
+[data-theme="dark"] .karaoke-glow {
+  animation: karaokeGlowDark 2s ease-in-out infinite;
+}
+
+@keyframes karaokeGlowDark {
+  0%, 100% {
+    text-shadow: 0 0 25px rgba(192, 132, 252, 0.7), 0 0 50px rgba(192, 132, 252, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 35px rgba(192, 132, 252, 0.9), 0 0 70px rgba(192, 132, 252, 0.6);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   System preference fallback (when data-theme is not explicitly set)
+   This allows the app to respect system preference on first load before JS runs
+   ───────────────────────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]):not([data-theme="dark"]) {
+    /* Same overrides as [data-theme="dark"] above - fallback only */
+    --text-primary: var(--color-neutral-100);
+    --text-secondary: var(--color-neutral-300);
+    --text-tertiary: var(--color-neutral-400);
+    --text-disabled: var(--color-neutral-500);
+    --text-inverse: var(--color-neutral-900);
+    --text-link: var(--color-jade-400);
+
+    --surface-page: var(--color-neutral-900);
+    --surface-card: var(--color-neutral-800);
+    --surface-elevated: var(--color-neutral-700);
+    --surface-overlay: hsla(0, 0%, 0%, 0.7);
+
+    --border-default: var(--color-neutral-700);
+    --border-subtle: var(--color-neutral-800);
+    --border-strong: var(--color-neutral-600);
+    --border-focus: var(--color-jade-400);
+
+    --interactive: var(--color-jade-400);
+    --interactive-hover: var(--color-jade-300);
+    --interactive-active: var(--color-jade-500);
+    --interactive-subtle: var(--color-jade-900);
+
+    --feedback-success-subtle: var(--color-jade-900);
+    --feedback-warning-subtle: var(--color-amber-900);
+    --feedback-error-subtle: var(--color-coral-900);
+
+    --shadow-sm: 0 1px 2px 0 hsla(0, 0%, 0%, 0.3), 0 1px 3px 0 hsla(0, 0%, 0%, 0.4);
+    --shadow-md: 0 2px 4px 0 hsla(0, 0%, 0%, 0.3), 0 4px 8px 0 hsla(0, 0%, 0%, 0.4);
+    --shadow-lg: 0 4px 8px 0 hsla(0, 0%, 0%, 0.3), 0 8px 16px 0 hsla(0, 0%, 0%, 0.5);
+    --shadow-xl: 0 8px 16px 0 hsla(0, 0%, 0%, 0.3), 0 16px 32px 0 hsla(0, 0%, 0%, 0.5);
+    --shadow-focus: 0 0 0 3px hsla(163, 72%, 50%, 0.3);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   8. SEASONAL THEMES (Future - Tet, Christmas, etc.)
+   ═══════════════════════════════════════════════════════════════════════════════
+
+   Seasonal themes are controlled by data-style attribute.
+   They can be combined with light/dark mode.
+
+   Example: <html data-theme="dark" data-style="tet">
+*/
+
+/* Tet (Lunar New Year) - Coming soon */
+[data-style="tet"] {
+  --color-primary-accent: hsl(0, 72%, 50%);    /* Lucky red */
+  --color-secondary-accent: hsl(45, 90%, 50%); /* Gold */
+}
+
+/* Christmas - Coming soon */
+[data-style="christmas"] {
+  --color-primary-accent: hsl(0, 70%, 45%);    /* Christmas red */
+  --color-secondary-accent: hsl(140, 60%, 35%); /* Forest green */
+}

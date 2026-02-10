@@ -1,0 +1,28 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+out
+build
+dist
+
+# Package files
+*.lock
+package-lock.json
+
+# Generated files
+*.min.js
+*.min.css
+
+# Documentation (preserve manual formatting)
+*.md
+
+# Config files that have specific formatting
+*.json
+
+# Supabase generated types
+lib/supabase/types.ts
+
+# Public assets
+public
