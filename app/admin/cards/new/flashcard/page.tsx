@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import confetti from 'canvas-confetti';
 import { slugify, getStorageUrl } from '@/lib/utils';
 import type { Category } from '@/lib/supabase/types';
 import { useAIGeneration, type FieldDirtyState, type TranslationDirection } from '@/hooks/useAIGeneration';
@@ -33,36 +32,36 @@ interface PendingSong {
 type AudioSource = 'auto' | 'admin' | 'community' | null;
 type Region = 'south' | 'north' | null;
 
-// Confetti celebration animation
+// Confetti celebration (dynamic import to avoid SSR/crash on page load)
 function triggerConfetti() {
-  // First burst
-  confetti({
-    particleCount: 100,
-    spread: 70,
-    origin: { y: 0.6 },
-    colors: ['#10b981', '#059669', '#34d399', '#6ee7b7', '#fbbf24'],
-  });
-
-  // Second burst slightly delayed
-  setTimeout(() => {
+  if (typeof window === 'undefined') return;
+  import('canvas-confetti').then((mod) => {
+    const confetti = mod.default;
     confetti({
-      particleCount: 50,
-      angle: 60,
-      spread: 55,
-      origin: { x: 0 },
-      colors: ['#10b981', '#059669', '#34d399'],
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#10b981', '#059669', '#34d399', '#6ee7b7', '#fbbf24'],
     });
-  }, 150);
-
-  setTimeout(() => {
-    confetti({
-      particleCount: 50,
-      angle: 120,
-      spread: 55,
-      origin: { x: 1 },
-      colors: ['#10b981', '#059669', '#34d399'],
-    });
-  }, 300);
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ['#10b981', '#059669', '#34d399'],
+      });
+    }, 150);
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ['#10b981', '#059669', '#34d399'],
+      });
+    }, 300);
+  }).catch(() => {});
 }
 
 // localStorage keys for admin preferences
@@ -285,11 +284,18 @@ export default function NewCardPage() {
         body: formData,
       });
 
-      if (!res.ok) {
-        throw new Error('Upload failed');
+      let data: { path?: string; publicUrl?: string; error?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        // ignore non-JSON response
       }
 
-      const data = await res.json();
+      if (!res.ok) {
+        const message = data?.error || res.statusText || 'Upload failed';
+        throw new Error(message);
+      }
+
       setForm(prev => ({
         ...prev,
         image_path: data.path,
@@ -297,7 +303,7 @@ export default function NewCardPage() {
       }));
     } catch (error) {
       console.error('Upload error:', error);
-      setError('Failed to upload image. Please try again.');
+      setError(error instanceof Error ? error.message : 'Failed to upload image. Please try again.');
     } finally {
       setIsUploading(false);
     }

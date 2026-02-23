@@ -23,6 +23,16 @@ case "$1" in
     sleep 3
     echo "🌐 Try: http://localhost:3000 or http://127.0.0.1:3000"
     ;;
+  start-webpack)
+    echo "Starting dev server (Webpack)..."
+    echo "Server will be available at: http://localhost:3000"
+    podman exec "$CONTAINER_NAME" sh -c "pkill -f 'next dev' || pkill -f 'next-server' || true" 2>/dev/null || true
+    sleep 2
+    podman exec -d "$CONTAINER_NAME" sh -c "cd /workspace && nohup npm run dev -- -H 0.0.0.0 > /tmp/nextjs.log 2>&1 &"
+    echo "✅ Server started (Webpack)"
+    sleep 3
+    echo "🌐 Try: http://localhost:3000 or http://127.0.0.1:3000"
+    ;;
   shell)
     echo "Opening shell in container..."
     podman exec -it "$CONTAINER_NAME" sh
@@ -60,16 +70,19 @@ case "$1" in
     podman exec "$CONTAINER_NAME" tail -f /tmp/nextjs.log 2>/dev/null || podman logs -f "$CONTAINER_NAME"
     ;;
   *)
-    echo "Usage: $0 {start|shell|stop|restart|restart-pod|status|logs}"
+    echo "Usage: $0 {start|start-webpack|shell|stop|restart|restart-pod|status|logs}"
     echo ""
     echo "Commands:"
-    echo "  start        - Start the Next.js dev server (port 3000) - runs in background"
-    echo "  shell        - Open a shell in the container"
-    echo "  stop         - Stop the pod (stops server too)"
-    echo "  restart      - Restart just the dev server (keeps pod running)"
-    echo "  restart-pod  - Restart the entire pod and server"
-    echo "  status       - Show pod and container status"
-    echo "  logs         - Show server logs (follow mode)"
+    echo "  start         - Start the Next.js dev server (port 3000) - runs in background"
+    echo "  start-webpack - Same as start (dev uses Webpack by default)"
+    echo "  shell         - Open a shell in the container"
+    echo "  stop          - Stop the pod (stops server too)"
+    echo "  restart       - Restart just the dev server (keeps pod running)"
+    echo "  restart-pod   - Restart the entire pod and server"
+    echo "  status        - Show pod and container status"
+    echo "  logs          - Show server logs (follow mode)"
+    echo ""
+    echo "  Dev server uses Webpack by default (npm run dev). Use npm run dev:turbopack for Turbopack."
     exit 1
     ;;
 esac

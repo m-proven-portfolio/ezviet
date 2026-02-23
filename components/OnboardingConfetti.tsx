@@ -8,9 +8,25 @@ import { CONFETTI_CONFIG, type TutorialStep } from '@/lib/onboarding/constants';
 // Dynamic import for SSR safety (same pattern as TimingFeedback.tsx)
 let confetti: ((options?: Record<string, unknown>) => void) | null = null;
 if (typeof window !== 'undefined') {
-  import('canvas-confetti').then((mod) => {
-    confetti = mod.default;
-  });
+  // #region agent log
+  import('canvas-confetti')
+    .then((mod) => {
+      confetti = mod.default;
+    })
+    .catch((err) => {
+      fetch('http://127.0.0.1:7242/ingest/7289c88e-7538-4ad4-81fe-c274a1e6ac68', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'OnboardingConfetti.tsx:canvas-confetti import',
+          message: 'canvas-confetti import failed',
+          data: { errorMessage: err?.message ?? String(err) },
+          timestamp: Date.now(),
+          hypothesisId: 'D',
+        }),
+      }).catch(() => {});
+    });
+  // #endregion
 }
 
 export function OnboardingConfetti() {

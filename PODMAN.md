@@ -127,3 +127,22 @@ podman ps
 
 ### ERR_EMPTY_RESPONSE in browser?
 See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for browser-specific fixes.
+
+### "Server unexpectedly dropped" / page never loads
+The dev server may be crashing (often Turbopack or OOM). Try:
+
+**1. Use Webpack instead of Turbopack**
+```bash
+./podman-dev.sh restart
+USE_WEBPACK=1 ./podman-dev.sh restart
+```
+Or start fresh with Webpack: `./podman-dev.sh start-webpack`
+
+**2. See the actual crash in the terminal**
+Run the dev server in the foreground so you get the stack trace when it drops:
+```bash
+./podman-dev.sh shell
+# inside the container:
+cd /workspace && npm run dev:webpack -- -H 0.0.0.0
+```
+Then open http://localhost:3000 in your browser. When it drops, the terminal will show the error. (Ctrl+C to stop, then exit the shell.)

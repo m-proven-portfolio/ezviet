@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AudioProvider } from "@/providers/AudioProvider";
 import { AuthCodeHandler } from "@/components/AuthCodeHandler";
 import { BottomNav } from "@/components/BottomNav";
+import { LoadFailedDebug } from "@/components/LoadFailedDebug";
 
 /**
  * Script to prevent FOUC (Flash of Unstyled Content)
@@ -91,6 +92,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased" suppressHydrationWarning>
         <ThemeProvider>
+          <LoadFailedDebug />
           <AuthProvider>
             <AudioProvider>
               {/* Catches OAuth codes that land on wrong pages and redirects to callback */}

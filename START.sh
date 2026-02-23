@@ -1,5 +1,7 @@
 #!/bin/bash
-# One-command startup script for EZViet dev environment
+# One-command startup script for EZViet dev environment (mike-dev consistent)
+# - Dev server uses Webpack by default (npm run dev)
+# - Runs whatever git branch is checked out (workspace mounted at /workspace)
 # Run this after restarting your computer
 
 set -e
@@ -17,7 +19,7 @@ echo "2️⃣  Starting pod..."
 podman pod start ezviet-dev 2>/dev/null || echo "   Pod already running"
 sleep 2
 
-# Step 3: Start dev server
+# Step 3: Start dev server (Webpack, current branch)
 echo "3️⃣  Starting dev server..."
 cd "$(dirname "$0")"
 ./podman-dev.sh start

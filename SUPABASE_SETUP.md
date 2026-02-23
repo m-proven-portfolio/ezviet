@@ -173,8 +173,55 @@ All migrations are in `supabase/migrations/`. Run them in order:
 **Optional (add features):**
 - `006_card_songs.sql` - Music/karaoke features
 - `015_books.sql` - Book reading features
+- `027_notifications.sql` - In-app notification bell (app works without it; no log spam)
 - `028_classrooms.sql` - Classroom features
 - `029_vietquest.sql` - Game features
+
+---
+
+## 🤖 Admin AI Features (Translation, Images, TTS, etc.)
+
+The `/admin/` area uses several AI services. To get them working, add these to `.env.local`:
+
+### Required environment variables
+
+| Variable | Used for | Where to get it |
+|----------|----------|------------------|
+| **`OPENAI_API_KEY`** | Translation (EN↔VI), conversation generation, image prompts, DALL·E 3 images, LRC/Whisper | [OpenAI API keys](https://platform.openai.com/api-keys) |
+| **`GOOGLE_CLOUD_API_KEY`** or **`GOOGLE_CLOUD_API_KEY`** | **TTS (text-to-speech)** for Vietnamese, **Gemini image generation** (optional) | [Google AI Studio](https://aistudio.google.com/apikey) (Gemini) or [Google Cloud Console](https://console.cloud.google.com/) → APIs → Text-to-Speech (for TTS) |
+
+**Note:** TTS uses **Google Cloud Text-to-Speech** and expects an API key that has the Text-to-Speech API enabled. The code checks both `GOOGLE_API_KEY` and `GOOGLE_CLOUD_API_KEY` for Gemini; for TTS it uses `GOOGLE_CLOUD_API_KEY`.
+
+### What uses what
+
+| Feature | Service | Env var |
+|---------|---------|---------|
+| **Flashcard translation** (admin cards new/edit, EN→VI and VI→EN) | OpenAI GPT | `OPENAI_API_KEY` |
+| **Studio / book editors** – translate vocab, dialogues, etc. | Same as above (`/api/generate`, `/api/generate/vi-to-en`) | `OPENAI_API_KEY` |
+| **Labels admin** – translate and “Generate TTS” per label | OpenAI for translate; Google for TTS | `OPENAI_API_KEY`, `GOOGLE_CLOUD_API_KEY` |
+| **Image generation** (conversations, studio, wizard) | DALL·E 3 **or** Gemini | `OPENAI_API_KEY` and/or `GOOGLE_API_KEY` / `GOOGLE_CLOUD_API_KEY` |
+| **Image prompt from situation** (e.g. “market scene”) | OpenAI GPT | `OPENAI_API_KEY` |
+| **Conversation generation** (admin conversations, studio) | OpenAI GPT | `OPENAI_API_KEY` |
+| **TTS for conversations, labels, cards, tone gym, etc.** | Google Cloud Text-to-Speech | `GOOGLE_CLOUD_API_KEY` |
+| **LRC generation** (lyrics + timestamps from song audio) | OpenAI Whisper | `OPENAI_API_KEY` |
+
+### Quick setup
+
+1. **OpenAI (translation, images, conversations, Whisper)**  
+   - Create an API key at https://platform.openai.com/api-keys  
+   - Add to `.env.local`:  
+     `OPENAI_API_KEY=sk-...`
+
+2. **Google (TTS and optional Gemini images)**  
+   - For **TTS**: enable [Text-to-Speech API](https://console.cloud.google.com/apis/library/texttospeech.googleapis.com) and create an API key (or use a service account). Add:  
+     `GOOGLE_CLOUD_API_KEY=...`  
+   - For **Gemini image generation** (alternative to DALL·E): get a key from [Google AI Studio](https://aistudio.google.com/apikey) and add:  
+     `GOOGLE_API_KEY=...` or `GOOGLE_CLOUD_API_KEY=...`
+
+3. Restart the dev server so env vars are picked up:  
+   `./podman-dev.sh restart`
+
+If a key is missing, the UI will often show “AI generation unavailable” or a 503/500; check server logs for the exact error.
 
 ---
 

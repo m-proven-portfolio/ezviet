@@ -211,6 +211,10 @@ export async function getUnreadCount(userId: string): Promise<number> {
     .is('read_at', null);
 
   if (error) {
+    // Table missing (migration 027 not run) - return 0 without spamming logs
+    if (error.code === 'PGRST205' || error.message?.includes('schema cache')) {
+      return 0;
+    }
     console.error('Failed to get unread count:', error);
     return 0;
   }
@@ -246,6 +250,10 @@ export async function getUserNotifications(
   const { data, error } = await query;
 
   if (error) {
+    // Table missing (migration 027 not run) - return [] without spamming logs
+    if (error.code === 'PGRST205' || error.message?.includes('schema cache')) {
+      return [];
+    }
     console.error('Failed to fetch notifications:', error);
     return [];
   }
@@ -269,6 +277,9 @@ export async function markAsRead(
     .eq('user_id', userId);
 
   if (error) {
+    if (error.code === 'PGRST205' || error.message?.includes('schema cache')) {
+      return true; // no-op when table missing
+    }
     console.error('Failed to mark notification as read:', error);
     return false;
   }
@@ -289,6 +300,9 @@ export async function markAllAsRead(userId: string): Promise<boolean> {
     .is('read_at', null);
 
   if (error) {
+    if (error.code === 'PGRST205' || error.message?.includes('schema cache')) {
+      return true; // no-op when table missing
+    }
     console.error('Failed to mark all notifications as read:', error);
     return false;
   }

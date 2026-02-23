@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createAdminClient } from '@/lib/supabase/server';
 
-// Initialize Gemini client (supports both env var names)
-const genAI = new GoogleGenerativeAI(
-  process.env.GOOGLE_API_KEY || process.env.GOOGLE_CLOUD_API_KEY || ''
-);
+// Initialize Gemini client (supports multiple env var names used in docs/setup)
+const googleApiKey =
+  process.env.GOOGLE_API_KEY ||
+  process.env.GOOGLE_CLOUD_API_KEY ||
+  process.env.GOOGLE_GENERATIVE_AI_API_KEY ||
+  '';
+const genAI = new GoogleGenerativeAI(googleApiKey);
 
 interface ImageGenerationRequest {
   prompt: string;
@@ -34,17 +37,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!process.env.GOOGLE_API_KEY && !process.env.GOOGLE_CLOUD_API_KEY) {
+    if (!googleApiKey) {
       return NextResponse.json(
         { error: 'Google API key not configured' },
         { status: 500 }
       );
     }
 
-    // Use Gemini 2.0 Flash for image generation
-    // Note: Gemini uses a different approach - we generate via the model
+    // Use Gemini 2.5 Flash Image (Nano Banana) - the supported image-generation model
+    // See https://ai.google.dev/gemini-api/docs/image-generation
     const model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash-exp',
+      model: 'gemini-2.5-flash-image',
       generationConfig: {
         // @ts-expect-error - responseModalities is valid for image generation
         responseModalities: ['Text', 'Image'],
@@ -135,7 +138,10 @@ export async function POST(request: NextRequest) {
       }
       if (errorMsg.includes('not found') || errorMsg.includes('not supported') || errorMsg.includes('invalid')) {
         return NextResponse.json(
-          { error: 'Gemini image generation is not available. Please use DALL-E 3 instead.' },
+          {
+            error:
+              'Gemini image model is not available for this API key (e.g. wrong model or no image access). Use DALL-E 3 instead, or check that your key has access to Gemini image generation.',
+          },
           { status: 400 }
         );
       }
@@ -143,6 +149,15 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           { error: 'Gemini image generation requires additional API access. Please use DALL-E 3 instead.' },
           { status: 400 }
+        );
+      }
+      if (errorMsg.includes('429') || errorMsg.includes('quota') || errorMsg.includes('too many requests')) {
+        return NextResponse.json(
+          {
+            error:
+              'Gemini free-tier quota exceeded. Use DALL-E 3 for now, or check Google AI Studio billing for higher limits.',
+          },
+          { status: 429 }
         );
       }
 

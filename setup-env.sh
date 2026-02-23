@@ -46,7 +46,7 @@ read -p "NEXT_PUBLIC_SUPABASE_ANON_KEY: " SUPABASE_ANON_KEY
 read -sp "SUPABASE_SERVICE_ROLE_KEY (hidden): " SUPABASE_SERVICE_KEY
 echo ""
 read -p "OPENAI_API_KEY (optional, press Enter to skip): " OPENAI_KEY
-read -p "GOOGLE_GENERATIVE_AI_API_KEY (optional, press Enter to skip): " GOOGLE_KEY
+read -p "GOOGLE_API_KEY for Gemini/TTS (optional, press Enter to skip): " GOOGLE_KEY
 
 # Create .env.local file
 cat > .env.local << EOF
@@ -61,7 +61,7 @@ if [ ! -z "$OPENAI_KEY" ]; then
 fi
 
 if [ ! -z "$GOOGLE_KEY" ]; then
-    echo "GOOGLE_GENERATIVE_AI_API_KEY=${GOOGLE_KEY}" >> .env.local
+    echo "GOOGLE_API_KEY=${GOOGLE_KEY}" >> .env.local
 fi
 
 echo ""
