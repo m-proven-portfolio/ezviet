@@ -18,8 +18,11 @@ interface PageProps {
 // Revalidate pages every 60 seconds to pick up new songs/changes
 export const revalidate = 60;
 
-// Generate static params for all cards (SSG)
+// Generate static params for all cards (skip when env not set, e.g. at build time)
 export async function generateStaticParams() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return [];
+  }
   const supabase = createAdminClient();
   const { data: cards } = await supabase.from('cards').select('slug');
   return (cards || []).map((card) => ({ slug: card.slug }));

@@ -13,8 +13,11 @@ interface PageProps {
 // Revalidate pages every 60 seconds for fresh data
 export const revalidate = 60;
 
-// Generate static params for all published label sets
+// Generate static params for all published label sets (skip when env not set, e.g. at build time)
 export async function generateStaticParams() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return [];
+  }
   const supabase = createAdminClient();
   const { data: labelSets } = await supabase
     .from('label_sets')
