@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { createAdminClient } from '@/lib/supabase/server';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+function getOpenAI(): OpenAI | null {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) return null;
+  return new OpenAI({ apiKey: key });
+}
 
 // Request body type
 interface ImageGenerationRequest {
@@ -45,6 +47,11 @@ export async function POST(request: NextRequest) {
         { error: 'prompt must be 4000 characters or less' },
         { status: 400 }
       );
+    }
+
+    const openai = getOpenAI();
+    if (!openai) {
+      return NextResponse.json({ error: 'AI service not configured' }, { status: 503 });
     }
 
     // Generate image with DALL-E 3

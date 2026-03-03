@@ -19,9 +19,11 @@ export interface ConversationGenerationResponse {
   prompt_version: string;
 }
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+function getOpenAI(): OpenAI | null {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) return null;
+  return new OpenAI({ apiKey: key });
+}
 
 const SYSTEM_PROMPT = `You are a Vietnamese language expert creating conversation flashcards for English speakers learning Vietnamese.
 
@@ -110,8 +112,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      console.error('OPENAI_API_KEY not configured');
+    const openai = getOpenAI();
+    if (!openai) {
       return NextResponse.json(
         { error: 'AI service not configured' },
         { status: 503 }

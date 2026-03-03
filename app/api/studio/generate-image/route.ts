@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { createClient } from '@/lib/supabase/server';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+function getOpenAI(): OpenAI | null {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) return null;
+  return new OpenAI({ apiKey: key });
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,6 +29,11 @@ export async function POST(request: NextRequest) {
 
     if (!profile?.is_admin) {
       return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
+    }
+
+    const openai = getOpenAI();
+    if (!openai) {
+      return NextResponse.json({ error: 'AI service not configured' }, { status: 503 });
     }
 
     const body = await request.json();

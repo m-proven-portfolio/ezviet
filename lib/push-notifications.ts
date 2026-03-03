@@ -47,18 +47,23 @@ interface WebPushLib {
   ) => Promise<void>;
 }
 
-// Check if web-push is available
+// Lazy-load web-push only at runtime so build succeeds when the package is optional
 let webpush: WebPushLib | null = null;
-try {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  webpush = require('web-push') as WebPushLib;
-} catch {
-  // web-push not installed
+function getWebPush(): WebPushLib | null {
+  if (webpush !== null) return webpush;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    webpush = require('web-push') as WebPushLib;
+  } catch {
+    webpush = null;
+  }
+  return webpush;
 }
 
 // Initialize web-push with VAPID details
-function initWebPush() {
-  if (!webpush) {
+function initWebPush(): boolean {
+  const wp = getWebPush();
+  if (!wp) {
     console.warn(
       '[Push] web-push package not installed. Run: npm install web-push'
     );
@@ -76,7 +81,7 @@ function initWebPush() {
     return false;
   }
 
-  webpush.setVapidDetails(subject, publicKey, privateKey);
+  wp.setVapidDetails(subject, publicKey, privateKey);
   return true;
 }
 
@@ -87,7 +92,8 @@ export async function sendPushNotification(
   subscription: PushSubscriptionData,
   payload: PushNotificationPayload
 ): Promise<boolean> {
-  if (!initWebPush() || !webpush) {
+  const wp = getWebPush();
+  if (!initWebPush() || !wp) {
     console.log('[Push] Skipping push notification (not configured)');
     return false;
   }
@@ -101,7 +107,7 @@ export async function sendPushNotification(
       },
     };
 
-    await webpush.sendNotification(
+    await wp.sendNotification(
       pushSubscription,
       JSON.stringify(payload)
     );
