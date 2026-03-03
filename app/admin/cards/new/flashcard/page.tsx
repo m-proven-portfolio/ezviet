@@ -298,8 +298,8 @@ export default function NewCardPage() {
 
       setForm(prev => ({
         ...prev,
-        image_path: data.path,
-        imagePreviewUrl: data.publicUrl,
+        image_path: data.path ?? '',
+        imagePreviewUrl: data.publicUrl ?? '',
       }));
     } catch (error) {
       console.error('Upload error:', error);
