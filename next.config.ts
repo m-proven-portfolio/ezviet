@@ -2,6 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ['sharp', 'canvas'],
+  productionBrowserSourceMaps: false,
   experimental: {
     serverActions: {
       bodySizeLimit: '50mb',

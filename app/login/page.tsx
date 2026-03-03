@@ -21,23 +21,28 @@ function LoginContent() {
     }
   }, [errorParam]);
 
-  // Check if already logged in
+  // Check if already logged in (time-boxed so slow Supabase doesn't block the form)
   useEffect(() => {
+    let cancelled = false;
+    const timeoutMs = 4000;
     const checkSession = async () => {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        router.push(redirectTo);
-      }
+      const userPromise = supabase.auth.getUser().then(({ data: { user } }) => user);
+      const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), timeoutMs));
+      const user = await Promise.race([userPromise, timeoutPromise]);
+      if (!cancelled && user) router.push(redirectTo);
     };
     checkSession();
+    return () => { cancelled = true; };
   }, [router, redirectTo]);
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     setError(null);
+    // Use NEXT_PUBLIC_APP_URL when set (e.g. Podman) so Supabase redirects to a URL the browser can reach
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || window.location.origin;
     try {
-      await signInWithGoogle(`${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`);
+      await signInWithGoogle(`${baseUrl}/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to sign in');
       setIsLoading(false);

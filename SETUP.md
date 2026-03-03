@@ -63,7 +63,7 @@ Your Podman dev environment is ready! Just:
 
 1. Add your Supabase credentials to `.env.local`
 2. Run: `./podman-dev.sh start`
-3. Open: http://localhost:3000
+3. Open: http://localhost:3000 or http://127.0.0.1:3000 (both work for Google sign-in)
 
 The workspace is mounted, so any changes you make locally are immediately available in the container.
 

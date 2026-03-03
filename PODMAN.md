@@ -8,7 +8,8 @@ This project uses Podman to run a containerized development environment.
 
 1. **Get Supabase credentials** - See [SETUP.md](./SETUP.md) for detailed instructions
 2. **Edit `.env.local`** - Add your Supabase URL and API keys
-3. **Then start the server** - See "Quick Start" below
+3. **For Google sign-in** - Both `http://localhost:3000` and `http://127.0.0.1:3000` work. If you see "Safari can't find the server" after signing in, add `NEXT_PUBLIC_APP_URL=http://localhost:3000` (or `http://127.0.0.1:3000`) to `.env.local` and use that same URL in the browser.
+4. **Then start the server** - See "Quick Start" below
 
 ## Quick Start
 
@@ -143,6 +144,6 @@ Run the dev server in the foreground so you get the stack trace when it drops:
 ```bash
 ./podman-dev.sh shell
 # inside the container:
-cd /workspace && npm run dev:webpack -- -H 0.0.0.0
+cd /workspace && npm run dev -- -H 0.0.0.0
 ```
 Then open http://localhost:3000 in your browser. When it drops, the terminal will show the error. (Ctrl+C to stop, then exit the shell.)

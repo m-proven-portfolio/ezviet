@@ -5,18 +5,32 @@ import { cookies } from 'next/headers';
 // Cookie max age: 365 days in seconds
 const COOKIE_MAX_AGE = 365 * 24 * 60 * 60;
 
+// Base URL the browser can reach. Use request origin when it's already local (localhost or
+// 127.0.0.1) so both work without config. Otherwise use NEXT_PUBLIC_APP_URL when the app
+// runs in a container and request has an unreachable hostname (e.g. container hostname).
+function getBaseUrl(requestOrigin: string): string {
+  try {
+    const hostname = new URL(requestOrigin).hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1') return requestOrigin;
+  } catch {
+    // invalid origin, fall through
+  }
+  return process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || requestOrigin;
+}
+
 export async function GET(request: Request) {
   console.log('[auth/callback] === AUTH CALLBACK STARTED ===');
   const { searchParams, origin } = new URL(request.url);
+  const baseUrl = getBaseUrl(origin);
   const code = searchParams.get('code');
   const error_description = searchParams.get('error_description');
   const redirectTo = searchParams.get('redirectTo') || '/';
-  console.log('[auth/callback] Params:', { hasCode: !!code, error_description, redirectTo });
+  console.log('[auth/callback] Params:', { hasCode: !!code, error_description, redirectTo, baseUrl });
 
   // If Supabase returned an error, show it
   if (error_description) {
     console.error('OAuth error from Supabase:', error_description);
-    return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error_description)}`);
+    return NextResponse.redirect(`${baseUrl}/login?error=${encodeURIComponent(error_description)}`);
   }
 
   if (code) {
@@ -86,14 +100,14 @@ export async function GET(request: Request) {
 
     if (error) {
       console.error('Code exchange error:', error.message);
-      return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error.message)}`);
+      return NextResponse.redirect(`${baseUrl}/login?error=${encodeURIComponent(error.message)}`);
     }
 
     const { data: { user } } = await supabase.auth.getUser();
     console.log('[auth/callback] getUser result:', { userId: user?.id, hasUser: !!user });
 
     if (!user) {
-      return NextResponse.redirect(`${origin}/login?error=no_user`);
+      return NextResponse.redirect(`${baseUrl}/login?error=no_user`);
     }
 
     // Check if user has completed onboarding
@@ -113,7 +127,7 @@ export async function GET(request: Request) {
     // If no profile or onboarding not completed, redirect to onboarding
     // Use redirectWithCookies to ensure session cookies are set
     if (!profile || !profile.onboarding_completed) {
-      const onboardingUrl = new URL('/onboarding', origin);
+      const onboardingUrl = new URL('/onboarding', baseUrl);
       onboardingUrl.searchParams.set('redirectTo', redirectTo);
       return redirectWithCookies(onboardingUrl.toString());
     }
@@ -121,14 +135,14 @@ export async function GET(request: Request) {
     // Check if trying to access admin and verify admin status
     if (redirectTo.startsWith('/admin')) {
       if (profile.is_admin !== true) {
-        return redirectWithCookies(`${origin}/unauthorized`);
+        return redirectWithCookies(`${baseUrl}/unauthorized`);
       }
     }
 
     // User is authenticated and onboarded, redirect to destination
-    return redirectWithCookies(`${origin}${redirectTo}`);
+    return redirectWithCookies(`${baseUrl}${redirectTo}`);
   }
 
   // No code provided
-  return NextResponse.redirect(`${origin}/login?error=no_code`);
+  return NextResponse.redirect(`${baseUrl}/login?error=no_code`);
 }
