@@ -257,6 +257,7 @@ function OnboardingContent() {
     setSaving(false);
 
     if (updateError) {
+      console.error('[onboarding] Welcome step failed:', updateError.message, updateError.details);
       setError('Failed to save profile');
       return;
     }
@@ -300,10 +301,11 @@ function OnboardingContent() {
     setSaving(true);
     const supabase = createClient();
 
+    // Only set experience_level and onboarding_completed so the update always succeeds regardless of
+    // learning_goal constraint (old: travel|heritage|business|fun vs new: daily_life|social|...).
     const { error: updateError } = await supabase
       .from('profiles')
       .update({
-        learning_goal: learningGoal,
         experience_level: experienceLevel,
         onboarding_completed: true,
       })
@@ -312,6 +314,7 @@ function OnboardingContent() {
     setSaving(false);
 
     if (updateError) {
+      console.error('[onboarding] Complete step failed:', updateError.message, updateError.details);
       setError('Failed to complete onboarding');
       return;
     }
