@@ -233,18 +233,19 @@ function OnboardingContent() {
   }
 
   async function handleWelcomeSubmit() {
-    const isValid = await checkUsername(username);
+    const trimmedUsername = username.trim().toLowerCase();
+    const trimmedDisplayName = displayName.trim();
+    const isValid = await checkUsername(trimmedUsername);
     if (!isValid) return;
 
     setSaving(true);
     const supabase = createClient();
 
     const updateData: { display_name: string; username: string; avatar_url?: string } = {
-      display_name: displayName,
-      username: username,
+      display_name: trimmedDisplayName || (profile?.display_name ?? ''),
+      username: trimmedUsername,
     };
 
-    // Only update avatar_url if it changed
     if (avatarUrl && avatarUrl !== profile?.avatar_url) {
       updateData.avatar_url = avatarUrl;
     }
@@ -257,11 +258,13 @@ function OnboardingContent() {
     setSaving(false);
 
     if (updateError) {
-      console.error('[onboarding] Welcome step failed:', updateError.message, updateError.details);
+      console.error('[onboarding] Welcome step failed:', updateError.code, updateError.message, updateError.details);
       setError('Failed to save profile');
       return;
     }
 
+    setDisplayName(updateData.display_name);
+    setUsername(updateData.username);
     setStep('phrase');
   }
 
@@ -314,7 +317,7 @@ function OnboardingContent() {
     setSaving(false);
 
     if (updateError) {
-      console.error('[onboarding] Complete step failed:', updateError.message, updateError.details);
+      console.error('[onboarding] Complete step failed:', updateError.code, updateError.message, updateError.details);
       setError('Failed to complete onboarding');
       return;
     }

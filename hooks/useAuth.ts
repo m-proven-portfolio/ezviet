@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { isNetworkError } from '@/lib/utils';
 import type { User, AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 export interface LrcContributorStats {
@@ -189,12 +190,11 @@ export function useAuth(): UseAuthReturn {
       const { data: { user: currentUser }, error } = await supabase.auth.getUser();
 
       if (error) {
-        // Only log - don't clear existing auth state on transient errors
-        // The onAuthStateChange subscription will handle actual sign-outs
-        console.warn('[useAuth] Session refresh warning:', error.message);
-        // Note: We intentionally don't clear user/profile here because:
-        // 1. This could be a transient network/timing error
-        // 2. If the session is truly invalid, SIGNED_OUT event will fire
+        // Don't log network hiccups (device sleep, offline, etc.)
+        if (!isNetworkError(error)) {
+          console.warn('[useAuth] Session refresh warning:', error.message);
+        }
+        // Don't clear existing auth state on transient errors
         return;
       }
 
@@ -203,8 +203,9 @@ export function useAuth(): UseAuthReturn {
         await updateAuthState(currentUser);
       }
     } catch (err) {
-      console.error('[useAuth] Error refreshing session:', err);
-      // Don't clear state on catch - let onAuthStateChange handle real auth changes
+      if (!isNetworkError(err)) {
+        console.error('[useAuth] Error refreshing session:', err);
+      }
     }
   }, [supabase, updateAuthState]);
 

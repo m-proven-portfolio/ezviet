@@ -90,7 +90,8 @@ export function getStorageUrl(bucket: string, path: string): string {
  * These are expected behaviors and shouldn't spam the console.
  */
 export function isNetworkError(error: unknown): boolean {
-  if (error instanceof TypeError && error.message === 'Failed to fetch') {
+  const msg = error instanceof Error ? error.message : String(error);
+  if (error instanceof TypeError && (msg === 'Failed to fetch' || msg === 'Load failed')) {
     return true;
   }
   // Check for AbortError (request was cancelled)
