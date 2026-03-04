@@ -156,9 +156,6 @@ export function FlashcardDeck({ initialCards }: FlashcardDeckProps) {
         }
       } catch (error) {
         console.error('Failed to fetch categories:', error);
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/7289c88e-7538-4ad4-81fe-c274a1e6ac68', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'FlashcardDeck.tsx:fetchCategories', message: 'categories fetch failed', data: { errorMessage: error instanceof Error ? error.message : String(error) }, timestamp: Date.now(), hypothesisId: 'B' }) }).catch(() => {});
-        // #endregion
       }
     }
     fetchCategories();
@@ -267,9 +264,6 @@ export function FlashcardDeck({ initialCards }: FlashcardDeckProps) {
       if (!isNetworkError(error)) {
         console.error('Failed to fetch more cards:', error);
       }
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/7289c88e-7538-4ad4-81fe-c274a1e6ac68', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location: 'FlashcardDeck.tsx:fetchMoreCards', message: 'cards/blocked fetch failed', data: { errorMessage: error instanceof Error ? error.message : String(error) }, timestamp: Date.now(), hypothesisId: 'C' }) }).catch(() => {});
-      // #endregion
     } finally {
       setIsFetching(false);
     }
