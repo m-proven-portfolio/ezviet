@@ -152,9 +152,8 @@ export function BookPreview({ book, onClose, onExport }: BookPreviewProps) {
             display: none !important;
           }
 
-          /* Each book page = one print page; min-height forces full page, break sends next to top */
+          /* Page break after each book page so the next starts at top of next print page (no min-height to avoid blank pages) */
           .book-page-print-wrapper {
-            min-height: ${pageSize.height};
             break-after: page;
             page-break-after: always;
           }
