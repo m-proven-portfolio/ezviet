@@ -124,22 +124,16 @@ export async function GET(request: Request) {
       isAdmin: profile?.is_admin
     });
 
-    // If no profile or onboarding not completed, redirect to onboarding
-    // Use redirectWithCookies to ensure session cookies are set
-    if (!profile || !profile.onboarding_completed) {
-      const onboardingUrl = new URL('/onboarding', baseUrl);
-      onboardingUrl.searchParams.set('redirectTo', redirectTo);
-      return redirectWithCookies(onboardingUrl.toString());
-    }
+    // Onboarding is optional: users can go straight to the app or complete onboarding later.
 
     // Check if trying to access admin and verify admin status
     if (redirectTo.startsWith('/admin')) {
-      if (profile.is_admin !== true) {
+      if (!profile || profile.is_admin !== true) {
         return redirectWithCookies(`${baseUrl}/unauthorized`);
       }
     }
 
-    // User is authenticated and onboarded, redirect to destination
+    // User is authenticated, redirect to destination
     return redirectWithCookies(`${baseUrl}${redirectTo}`);
   }
 
