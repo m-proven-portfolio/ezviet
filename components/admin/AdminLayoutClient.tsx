@@ -12,17 +12,21 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <AdminSidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-      />
+    <div className="admin-layout min-h-screen bg-gray-50">
+      {/* Sidebar - hidden when printing (e.g. Book Studio print/PDF) */}
+      <div className="print:hidden">
+        <AdminSidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
+      </div>
 
       {/* Main Content Area */}
       <div className="lg:pl-16 transition-all duration-200">
-        {/* Header */}
-        <AdminHeader onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
+        {/* Header - hidden when printing */}
+        <div className="print:hidden">
+          <AdminHeader onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
+        </div>
 
         {/* Page Content */}
         <main>

@@ -27,7 +27,7 @@ export function BookPreview({ book, onClose, onExport }: BookPreviewProps) {
     : book.pages || [];
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-gray-900">
+    <div className="book-preview-root fixed inset-0 z-50 flex flex-col bg-gray-900">
       {/* Header (hidden when printing) */}
       <header className="flex items-center justify-between bg-gray-800 px-6 py-3 print:hidden">
         <div className="flex items-center gap-4">
@@ -70,13 +70,13 @@ export function BookPreview({ book, onClose, onExport }: BookPreviewProps) {
         </div>
       </header>
 
-      {/* Preview Area */}
-      <div className="flex-1 overflow-y-auto p-8 print:p-0">
+      {/* Preview Area - scrollbars hidden; in print, overflow visible so all pages flow */}
+      <div className="book-preview-content flex-1 overflow-y-auto p-8 print:p-0">
         <div className="mx-auto print:mx-0">
           {allPages.map((page, index) => (
             <div
               key={page.id}
-              className="mb-8 print:mb-0 print:break-after-page"
+              className="book-page-print-wrapper mb-8 print:mb-0 print:break-after-page"
             >
               {/* Page number indicator (hidden in print) */}
               <div className="mb-2 text-center text-xs text-gray-500 print:hidden">
@@ -99,34 +99,77 @@ export function BookPreview({ book, onClose, onExport }: BookPreviewProps) {
         </div>
       </div>
 
+      {/* Hide scrollbars in preview (viewport and content area) */}
+      <style jsx global>{`
+        .book-preview-content {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        .book-preview-content::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
       {/* Print Styles */}
       <style jsx global>{`
         @media print {
           @page {
             size: ${pageSize.width} ${pageSize.height};
-            margin: 15mm; /* Use @page margin instead of inline padding */
+            margin: 15mm;
           }
 
-          body {
+          html, body {
+            overflow: visible !important;
             print-color-adjust: exact;
             -webkit-print-color-adjust: exact;
+          }
+
+          /* Admin layout: no min-height or padding in print so only preview content flows */
+          .admin-layout {
+            min-height: 0 !important;
+            background: transparent !important;
+          }
+          .admin-layout > div {
+            padding-left: 0 !important;
+          }
+          .admin-layout main {
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+
+          /* Only show preview content; no fixed overlay, full document flow so all pages print */
+          .book-preview-root {
+            position: static !important;
+            height: auto !important;
+            min-height: auto !important;
+            background: transparent !important;
+          }
+
+          .book-preview-content {
+            overflow: visible !important;
           }
 
           .print\\:hidden {
             display: none !important;
           }
 
-          .print\\:break-after-page {
+          /* Each book page = one print page; min-height forces full page, break sends next to top */
+          .book-page-print-wrapper {
+            min-height: ${pageSize.height};
             break-after: page;
-            page-break-after: always; /* Legacy browser support */
+            page-break-after: always;
           }
 
-          /* Page container - remove inline padding, let @page margin handle it */
+          .print\\:break-after-page {
+            break-after: page;
+            page-break-after: always;
+          }
+
+          /* Page content fills width within @page margins */
           .studio-page {
             width: 100% !important;
             height: auto !important;
             min-height: unset !important;
-            padding: 0 !important; /* Remove inline padding in print */
+            padding: 0 !important;
             box-sizing: border-box !important;
           }
 
